@@ -1,10 +1,11 @@
 #include "vorogmsh.h"
 #include <voro++.hh>
 #include <string>
+#include <iostream>
 using namespace std;
 using namespace voro;
 
-#include "adjacencyMatrix.h"
+#include "adjacencyMatrix.git/trunk/adjacencyMatrix.h"
 
 double distance(double x1,double y1, double z1,double x2,double y2, double z2){
 /**
@@ -72,7 +73,7 @@ void vorogmsh::addFace(vector<int> f_vert,int j,vector<int> loc2glo) {
         pt1=loc2glo[pt1];   // Converts local (cell) to global indices
         pt2=loc2glo[pt2];
 
-        int edge_id=adj_mat_vtx_.Set(pt1,pt2);  // Pick up the edge ID from the adjacency matrix
+        int edge_id=adj_mat_vtx_.add(pt1,pt2);  // Pick up the edge ID from the adjacency matrix
         facek.push_back(edge_id);               // Add the edge ID to the list of edges defining the face
     }
     faces_.push_back(facek);           // Add the face ID to the list of faces
@@ -121,12 +122,12 @@ vorogmsh::vorogmsh(container_poly& con) {
                     if(neighi<0) {
                         face_exists=false;          // Volume boundary
                     } else {
-                        face_exists=adj_mat_cel_.Get(neighi,idc,face_id); // Checks in the adjecency matrix if the face already exists
+                        face_exists=adj_mat_cel_.get(neighi,idc,face_id); // Checks in the adjecency matrix if the face already exists
                     }
                     if (face_exists) {
                         voli.push_back(face_id);            // The face already exists
                     } else {
-                        int idf=adj_mat_cel_.Set(neighi,idc);   // New entry in the cell adjacency matrix
+                        int idf=adj_mat_cel_.add(neighi,idc);   // New entry in the cell adjacency matrix
                         addFace(f_vert,j,loc2glo);
                         voli.push_back(idf);
                         if(neighi<0) {
@@ -140,6 +141,31 @@ vorogmsh::vorogmsh(container_poly& con) {
         while (cls.inc());
 }
 
+
+vector<double> vorogmsh::computeElmtSize() {
+    vector<double> minSize(vtx_.size());
+    vector<double> lengths=this->edgeLengths(); // List of edge lengths
+    for(int i=0; i<adj_mat_vtx_.size(); i++) {
+        for(int j=0;j<i;j++){
+            int edge_id;
+            if(adj_mat_vtx_.get(i,j,edge_id)){
+                edge_id=abs(edge_id);   // ID of the corresponding edge
+                double dist=lengths.at(edge_id-1);
+                if(minSize.at(i)==0){   // Local size not computed yet
+                    minSize.at(i)=dist;
+                } else {                // Keep the lowest value
+                    minSize.at(i)=min(dist,minSize.at(i));
+                }
+                if(minSize.at(j)==0){   // Local size not computed yet
+                    minSize.at(j)=dist;
+                } else {                // Keep the lowest value
+                    minSize.at(j)=min(dist,minSize.at(j));
+                }
+            }
+        }
+    }
+    return minSize;
+}
 
 void formatSequence(FILE *fp,const char *seq_name,vector<int> vect,const char* entity_name) {
 /**
@@ -167,24 +193,31 @@ void writeSequence(FILE *fp,const char *seq_name,vector<int> vect,int i) {
 }
 
 
-void vorogmsh::saveasgeo(const char * filename,double eSize) {
+void vorogmsh::saveasgeo(const char * filename,double nomiSize) {
 /**
  * Exports the geometry as a gmsh file (.geo).
  * \param[in] Path to the file to write to
- * \param[in] Element size
+ * \param[in] Nominal element size (optional)
  */
     FILE *fp=fopen(filename,"w");
+    vector<double> minSize=this->computeElmtSize();
 
     // Vertices
     for(unsigned int i=0; i<vtx_.size(); i++) {
-        fprintf(fp,"Point(%d)={%g,%g,%g,%g};\n",i,vtx_[i],vty_[i],vtz_[i],eSize);
+        double lSize;
+        if(nomiSize<=0){
+            lSize=minSize[i];
+        } else {
+            lSize=min(minSize[i],nomiSize);
+        }
+        fprintf(fp,"Point(%d)={%g,%g,%g,%g};\n",i,vtx_[i],vty_[i],vtz_[i],lSize);
     }
 
     // Edges
     for(int i=0; i<adj_mat_vtx_.size(); i++) {
         for(int j=0;j<i;j++){
             int edge_id;
-            if(adj_mat_vtx_.Get(i,j,edge_id)){
+            if(adj_mat_vtx_.get(i,j,edge_id)){
                 if(edge_id<0){   // Avoid negative index
                     fprintf(fp,"Line(%d)={%d,%d};\n",-edge_id,j,i);
                 } else {
@@ -218,19 +251,21 @@ vector<double> vorogmsh::edgeLengths() {
 /**
  * Returns a vector containing the length of each edge.
  */
-    vector<double> lengths;
+    vector<double> lengths(adj_mat_vtx_.nEdges());
     unsigned int i,j;
     double x1,y1,z1,x2,y2,z2;
     for(i=0; i<(unsigned int)adj_mat_vtx_.size(); i++) {
         x1=vtx_[i];
         y1=vty_[i];
         z1=vtz_[i];
+        int ide;
         for(j=0; j<i; j++) {
-            if(adj_mat_vtx_.Get(i,j)){
+            if(adj_mat_vtx_.get(i,j,ide)){
+                ide=abs(ide);
                 x2=vtx_[j];
                 y2=vty_[j];
                 z2=vtz_[j];
-                lengths.push_back(distance(x1,y1,z1,x2,y2,z2));
+                lengths.at(ide-1)=distance(x1,y1,z1,x2,y2,z2);
             }
         }
     }

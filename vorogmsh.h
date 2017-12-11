@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <voro++.hh>
-#include "adjacencyMatrix.h"
+#include "adjacencyMatrix.git/trunk/adjacencyMatrix.h"
 
 
 class vorogmsh {
@@ -56,13 +56,18 @@ public:
     */
         return volumes_;
     }
-    void saveasgeo(const char *,double);
+    void saveasgeo(const char *,double eSize=0);
     /**
     *   Saves the geometry as a gmsh file (.geo).
     */
     vector<double> edgeLengths();
     /**
     *   Returns the edge lenghts.
+    */
+
+    vector<double> computeElmtSize();
+    /**
+    *   Computes the local element size
     */
 
 private:
