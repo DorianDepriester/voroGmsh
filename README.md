@@ -2,7 +2,7 @@
 Class for writing geometry files for Gmsh from voro++
 
 ## Purpose
-This project aims to convert data from Voro++ to Gmsh-readable files (.geo). Then, the volumes can be meshed thanks to Gmsh.
+This class is intended to export the geometry of Voronoï cells computed using the Voro++ library as a Gmsh-readable file.
 
 ## Requirements
 ### Voro++
@@ -16,23 +16,23 @@ Since the class is intended to generate files for Gmsh, you may [install it](htt
 
 ## Installation
 ### Import the required library into your project
-Depending on the path to the the voroGmsh files, you may need something like this:
+Depending on the path to the voroGmsh files, you may need something like this:
 ```C++
 #include "voroGmsh.git/trunk/vorogmsh.h"
 ```
 ### Check the path to AdjacencyMatrix
-In both vorogmsh.cpp and vorogmsh.h, check the path for the AdjacencyMatrix library (see above). E.g.:
+In both vorogmsh.cpp and vorogmsh.h, check the path for the `AdjacencyMatrix` library (see above). E.g.:
 ```C++
 #include "adjacencyMatrix.git/trunk/adjacencyMatrix.h"
 ```
 
 ## How to use it?
 ### Create an instance of vorogmsh
-Once you have defined the Voro++ container and filled it with particles, you can create an object of class vorogmsh:
+Once you have defined the Voro++ container and filled it with particles, you can create an object of class `vorogmsh`:
 ```C++
 vorogmsh gmsh(con);
 ```
-where con is the name of the container. This object gmsh contains all data needed to create a 3D geometry in Gmsh.
+where `con` is the name of the container. The object `gmsh` contains all the data needed to create a 3D geometry in Gmsh.
 
 ### Dump the geometry into a text file
 Then, you can write an ASCII file defining the whole geometry:
@@ -40,8 +40,11 @@ Then, you can write an ASCII file defining the whole geometry:
 gmsh.saveasgeo("Geometry.geo");
 ```
 
-The saveasgeo method automatically computes the maximum element size at each vertex. You can override this value by passing the nominal size as an optional parameter. E.g.:
+The `saveasgeo` method automatically computes the maximum element size at each vertex (based on the edge lengths). You can override this value by passing the nominal size as an optional parameter. E.g.:
 ```C++
-gmsh.saveasgeo("Regis_cemen.geo",0.5);
+gmsh.saveasgeo("Geometry.geo",0.5);
 ```
-Note that if the nominal value is smaller than the computed size, the latter will be used instead.
+Note that if the nominal size is smaller than the computed one, the latter will be used instead.
+
+## Note
+I am not a programmer. Thus, this class is probably not optimized in terms of performances or flexibility. Do not hesitate to commit or fork this project in order to improve it.
