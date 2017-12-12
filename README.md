@@ -52,4 +52,4 @@ As an example, the [`pack_six_cube_poly` dataset](http://math.lbl.gov/voro++/exa
 <img src="https://raw.githubusercontent.com/DorianDepriester/voroGmsh/master/Examples/pack_six_cube_poly.png" width="300"><img src="https://raw.githubusercontent.com/DorianDepriester/voroGmsh/master/Examples/pack_six_cube_poly_01.png" width="300">
 
 ## Note
-I am not a programmer. Thus, this class is probably not optimized in terms of performances or flexibility. Do not hesitate to commit or fork this project in order to improve it.
+I am not a programmer. Thus, this class is probably not optimized in terms of performances or flexibility. Do not hesitate to fork this project in order to improve it.
