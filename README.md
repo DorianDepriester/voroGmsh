@@ -46,5 +46,10 @@ gmsh.saveasgeo("Geometry.geo",0.5);
 ```
 Note that if the nominal size is smaller than the computed one, the latter will be used instead.
 
+## Example
+As an example, the [`pack_six_cube_poly` dataset](http://math.lbl.gov/voro++/examples/radical/) (provided in Voro++ examples) has been used. Figure below illustrates the meshes with default mesh size (left) and nominal size of 0.1 (right).
+
+<img src="https://raw.githubusercontent.com/DorianDepriester/voroGmsh/master/Examples/pack_six_cube_poly.png" width="300"><img src="https://raw.githubusercontent.com/DorianDepriester/voroGmsh/master/Examples/pack_six_cube_poly_01.png" width="300">
+
 ## Note
 I am not a programmer. Thus, this class is probably not optimized in terms of performances or flexibility. Do not hesitate to commit or fork this project in order to improve it.
