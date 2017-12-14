@@ -108,6 +108,7 @@ vorogmsh::vorogmsh(container_poly& con) {
 
     if(cls.start()) do if(con.compute_cell(c,cls)) {
                 cls.pos(idc,xp,yp,zp,rp);
+                ID_.push_back(idc);
                 vector<int> neigh;
                 vector<int> voli;
                 vector<double> v;
@@ -237,6 +238,7 @@ void vorogmsh::saveasgeo(const char * filename,double nomiSize) {
     for(unsigned int i=0; i<volumes_.size(); i++) {
         writeSequence(fp,"Surface Loop",volumes_[i],i);
         fprintf(fp,"Volume(%d)={%d};\n",i,i);
+        fprintf(fp,"Physical Volume(\"Cell %d\")={%d};\n",ID_[i],i);
     }
 
     // Bounding faces

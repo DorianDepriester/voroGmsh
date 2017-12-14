@@ -79,6 +79,7 @@ private:
     std::vector<int> bounds_[6];
     adjacencyMatrix adj_mat_vtx_;
     adjacencyMatrix adj_mat_cel_;
+    std::vector<int> ID_;
 
     bool vtxExists(double,double,double,int&);
     std::vector<int> addVtx(std::vector<double>,int&);
