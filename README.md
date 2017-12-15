@@ -1,4 +1,5 @@
 # voroGmsh
+[![DOI](https://zenodo.org/badge/89606446.svg)](https://zenodo.org/badge/latestdoi/89606446)
 Class for writing geometry files for Gmsh from voro++
 
 ## Purpose
