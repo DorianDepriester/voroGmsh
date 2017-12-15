@@ -1,6 +1,7 @@
 # voroGmsh
-[![DOI](https://zenodo.org/badge/89606446.svg)](https://zenodo.org/badge/latestdoi/89606446)
 Class for writing geometry files for Gmsh from voro++
+
+[![https://zenodo.org/badge/89606446.svg](https://zenodo.org/badge/89606446.svg)](https://zenodo.org/badge/latestdoi/89606446)
 
 ## Purpose
 This class is intended to export the geometry of Voronoï cells computed using the Voro++ library as a Gmsh-readable file.
