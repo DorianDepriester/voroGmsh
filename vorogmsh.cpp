@@ -19,7 +19,7 @@ bool vorogmsh::vtxExists(double x,double y,double z,int& id) {
  * Checks if the point with coordinates (x,y,z) already exists in the list of vertices.
  * Returns the index of the first duplicate if any; returns -1 otherwise.
  */
-    double eps=1e-6;    // Tolerance for merging two points
+    double eps=1e-20;    // Tolerance for merging two points
     int i=0;
     int nref=vtx_.size();
     bool dupli=false;
@@ -239,13 +239,6 @@ void vorogmsh::saveasgeo(const char * filename,double nomiSize) {
         writeSequence(fp,"Surface Loop",volumes_[i],i);
         fprintf(fp,"Volume(%d)={%d};\n",i,i);
         fprintf(fp,"Physical Volume(\"Cell %d\")={%d};\n",ID_[i],i);
-    }
-
-    // Bounding faces
-    string bname[6]= {"\"xmin\"","\"xmax\"","\"ymin\"","\"ymax\"","\"zmin\"","\"zmax\""};
-    for(int i=0;i<6;i++){
-        const char* entityName=bname[i].c_str();
-        formatSequence(fp,"Physical Surface",bounds_[i],entityName);
     }
 }
 
